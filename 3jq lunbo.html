@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>电影轮播图</title>
+    <script src="./jquery.min.js"></script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #container {
+            width: 1000px;
+            height: 409px;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        #list {
+            width: 7000px;
+            height: 409px;
+            position: absolute;
+            z-index: 1
+        }
+
+        #list img {
+            float: left;
+            display: block;
+        }
+
+        #pre {
+            font-size: 40px;
+            color: #fff;
+            width: 45px;
+            height: 45px;
+            float: left;
+            position: absolute;
+            top: 190px;
+            left: 10px;
+            cursor: pointer;
+            display: none;
+            z-index: 2;
+            line-height: 45px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #next {
+            font-size: 40px;
+            color: #fff;
+            width: 45px;
+            height: 45px;
+            float: left;
+            position: absolute;
+            top: 190px;
+            right: 10px;
+            cursor: pointer;
+            display: none;
+            z-index: 2;
+            line-height: 45px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #container:hover #pre,
+        #container:hover #next {
+            display: block;
+        }
+
+        #pre:hover,
+        #next:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #dot {
+            width: 1000px;
+            height: 10px;
+            position: absolute;
+            bottom: 15px;
+            left: 450px;
+            z-index: 10;
+        }
+
+        #dot span {
+            width: 10px;
+            height: 10px;
+            display: block;
+            border-radius: 10px;
+            background-color: #fff;
+            margin: 0 5px;
+            float: left;
+            cursor: pointer;
+        }
+
+        #dot .on {
+            background-color: #69aaec;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div id="container">
+        <div id="pre">&lt;</div>
+        <div id="next">&gt;</div>
+        <div id="list" style="left:-1000px;">
+            <a href="#"><img src="5.jpg" width="1000"></a>
+            <a href="#"><img src="1.jpg" width="1000"></a>
+            <a href="#"><img src="2.jpg" width="1000"></a>
+            <a href="#"><img src="3.jpg" width="1000"></a>
+            <a href="#"><img src="4.jpg" width="1000"></a>
+            <a href="#"><img src="5.jpg" width="1000"></a>
+            <a href="#"><img src="1.jpg" width="1000"></a>
+        </div>
+        <div id="dot">
+            <span index="1" class="on"></span>
+            <span index="2"></span>
+            <span index="3"></span>
+            <span index="4"></span>
+            <span index="5"></span>
+        </div>
+    </div>
+</body>
+<script>
+    $(function(){
+        var $next = $('#next');
+        var $pre = $('#pre');
+        var $list = $('#list');
+        var $dots = $('#dot span');
+        var index = 1
+        var list = document.getElementById('list')
+        autoplay()   
+        // console.log(list)
+        //绑定下一页的事件
+        $next.click(function(){
+            if(index==6){
+                list.style.left=-1000+'px'
+                index=1
+            }
+            index++
+            animate()
+           
+        })
+    //    绑定上一页的事件
+       $pre.click(function(){
+            if(index==0){
+                list.style.left=-5000+'px'
+                index=5
+            }
+            index--
+            animate()
+          
+        })
+        $dots.click(function(){
+          index = $(this).attr('index');
+            if(!$('#list').is(':animated')){
+                var new_left = -(index) *1000
+                $list.animate({'left':new_left+'px'},1000)
+                $dots.removeClass('on')
+                $dots.eq(index-1).addClass('on')
+            }
+        })
+        $('#container').hover(function(){
+            clearInterval(timer)
+        },function(){
+            //重新调用轮播
+            autoplay()
+        })
+        //运动函数
+        function animate(){
+            if(!$('#list').is(':animated')){
+                console.log(index)
+                var new_left = -(index) *1000
+                $list.animate({'left':new_left+'px'},1000,function(){
+                    showDot(index)
+                })
+            }
+        }
+        function showDot(ind){
+          
+            $dots.removeClass('on')
+            if(index==6){
+                $dots.eq(0).addClass('on')
+            }else if(index==0){
+                $dots.eq(4).addClass('on')
+            }
+            
+                $dots.eq(index-1).addClass('on')
+        }
+          // 自动播放
+    function autoplay(){
+        timer= setInterval(()=>{
+       $next.click()
+        },2000)
+    }      
+ 
+    })
+
+  
+ </script>
+
+</html>
